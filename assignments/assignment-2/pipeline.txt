@@ -1,0 +1,17 @@
+# Answers for Assignment 2 Question 1
+# Jamil Antoine Jabbour 
+# 100380000
+
+a) For a summation of two floating point there is seven operation. Of the seven operations, two are 'fetch' and'store' which require 2 ns each and the other operations require 1 ns. Therefore, a floating point addition takes 9 ns. 
+
+
+b) Since 1 addition requires 9 ns then 1000 pairs of floating point requires 9000 ns in an unpipelined 
+
+
+c) In a pipelined addition of 1000 pairs of floating numbers, with fetxh and store operations of 2 ns the first operation will take 9 ns and since there is a delay of 2 ns for feching the left over pairs will hold for 2 ns.
+Therefore, the time required to finish the computation of a pipedline of 1000 pairs of floating points is:
+9 + 2*999 = 2007 ns. 
+
+
+d) If there is a level-1 cache miss on fetch of one of the operands, the pipeline is held for a 1 ns delay, as for the level-2 cache miss the pipeline is held for 49 ns.  
+

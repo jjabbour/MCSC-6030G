@@ -1,0 +1,251 @@
+\input{preamble_article}
+\doublespacing
+\begin{document}
+
+\title{ Numerical Solution For The  Biharmonic Equation Using Jacobi Iterative Method\\
+        High Performance Computing MCSC6030G\\
+        }
+\author{Jamil Jabbour\footnote{\tt jamil.jabbour@uoit.ca}}
+\date{\today}
+\maketitle
+
+\begin{center}
+\bf{abstract}
+\end{center}
+In many fluid applications, the biharmonic operator appears with its difficulty of solving the fourth order derivative in the differential equation. In this report, the two dimensional biharmonic equation on a Cartesian square is transformed to two Poisson equation given $\Delta u$ along the boundary. Jacobi iterative method is used to solve the linear equations arising from the discretisation using second ordered finite difference on the mesh grid. The numerical solver is implemented serially and in parallel.
+
+\section{Introduction}
+
+In this paper, we study the convergence and the performance of the Jacobi iteration method implemented serially and in parallel to solve the system of linear algebraic equations that arises from a second ordered finite difference discretisation on a Cartesian unit square,\\
+\begin{equation}\label{bih_equ}
+\begin{split}
+&\Delta^2 u =  f(x,y),  \;\;\;\;(x,y)\in\Omega,\\
+&u = 0 = \Delta u,  \;\;\;\;\;\;\;(x,y) \in \partial{\Omega},
+\end{split}
+\end{equation}
+where
+\begin{align*}
+&\Delta \equiv \nabla^2 = \pderiv[2]{}{x} + \pderiv[2]{}{y}\\
+&\Delta^2\equiv\nabla^4 =\pderiv[4]{}{x} + 2\frac{\partial^4}{\partial{x^2}\partial{y^2}} + \pderiv[4]{}{y}
+\end{align*}
+and $\Omega \subseteq [0,1]\times[0,1]$ is a closed bounded set in $\mathbb{R}^2$ with a smooth boundary.\\
+Under the assumption that the  solution for the biharmonic equation $u(x,y)\in C^{4}(\Omega)$, and given the boundary conditions assumed in (\ref{bih_equ}), the biharmonic equation is decoupled as two Poisson equations with Dirichlet boundary condition on the same domain,\\
+\[\begin{cases}
+\Delta v = f  & \mbox{in}\ \Omega \\
+v = 0  & \mbox{on}\ \partial{\Omega}
+\end{cases}\]
+\[ \begin{cases}
+\Delta u = v  & \mbox{in}\ \Omega \\
+ u = 0  & \mbox{on}\ \partial{\Omega}
+\end{cases}\]
+This problem arises in many applications. In fluid mechanics $u$ and $v$ represents streamline function and vorticity respectively where for areas of continuum mechanics, including linear elasticity theory, the biharmonic equation is considered a model for plate bending where $u$ represents the deflection and $v$ is the bending moment.
+The objective of this paper is to solve the decoupled Poisson problem numerically using Jacobi iteration. To validate the result obtained by this method, the approximate solution is compared to an analytical solution of the problem.
+
+\section{Problem Formulation}
+In this section, we outline the methods and techniques used to obtain the algebraic equations derived from the decoupled system.  The domain is discretised on a uniform Cartesian grid with $h = 1/(N+1)$ and $N$ is the number of interior points in each dimension such that $u(x_i,y_j) = U_{ij}$ and $v(x_i,y_j) = V_{ij}$,
+\begin{align}
+&x\in[0,1] \longrightarrow x_i = ih \hspace{1cm} i = 0:N+1\\
+&y\in[0,1] \longrightarrow y_j = jh \hspace{1cm} j = 0:N+1,
+\end{align}
+the Laplacian operator is discretised using second-ordered finite difference with local truncation of $h^2$,
+\begin{equation}
+\Delta U_{i,j} \approx\ h^{-2}\Big[U_{i-1,j}+ U_{i+1,j}+ U_{i,j-1}+ U_{i,j+1}-4U_{i,j}\Big].
+\end{equation}
+and the homogeneous Dirichlet boundary conditions are initialized as,
+\begin{equation}
+\begin{split}
+&U_{0,j} = 0 = U_{N+1,j} \\
+&U_{i,0} = 0 = U_{i,N+1},
+\end{split}
+\end{equation}
+Using the above discretization , we obtain a system of linear equations $\textbf{A}\textbf{\underline{U}} = \textbf{\underline{F}}$ that we solve numerically using an Jacobi iterative method.
+\begin{align}
+\begin{bmatrix}
+    \bf{D}_2^2 & -\mathbb{I} \\
+    \bf{0} & \bf{D}_2^2
+\end{bmatrix}
+\begin{bmatrix}
+    \bf{U} \\
+    \bf{V}
+\end{bmatrix}
+=
+\begin{bmatrix}
+    \bf{0}  \\
+    \bf{F}
+\end{bmatrix}
+\end{align}
+where $\bf{D}_2^2$ is the second ordered finite differentiation matrix of the Laplacian operator, $\mathbb{I}$ is the identity matrix and $\bf{F}$ represents the function valued on the grid.\\
+Given an initial guess $\bf{V^{(0)}}$, the iteration is started until $\bf{U}$ converges with a desired tolerance of the relative error in the 2-norm. We note that the condition $\rho(\textbf{M}_J) < 1$, where $\textbf{M}_J$  is the Jacobi matrix and $\rho(.)$ is the spectral radius of the Jacobi matrix, is necessary for the method to converge. The spectral radius of the Jacobi matrix obtained from the discretisation of the original problem (\ref{bih_equ}) using second ordered finite difference is greater than 1, the method does not converge which lead to  the reformulation of the problem to a system of Poisson equations. The Jacobi matrix of the transformed problem satisfies the necessary condition for convergence, however the convergence might be slow depending on the number of grid points and the tolerance assigned (Table 1). \\
+~\\
+\begin{table*}[h]
+\centering
+\begin{tabular}{|p{0.15\linewidth}p{0.15\linewidth}p{0.15\linewidth}p{0.15\linewidth}|}
+\hline
+$N$ & max($\rho(\textbf{M}_J)$)& $\delta$ & Iterations\\
+\hline
+25   & \multirow{2}{*}{0.993712}&$10^{-4}$ & 836\\
+25   & &$10^{-6}$ & 1547\\
+\hline
+50   & \multirow{2}{*}{0.998244}&$10^{-4}$ & 2377\\
+50   & &$10^{-6}$ & 5180\\
+\hline
+100  &\multirow{2}{*}{0.999535} &$10^{-4}$ & 5952\\
+100  & &$10^{-6}$ & 17155\\
+\hline
+\end{tabular}
+\caption{shows the number of iterations needed to converge to the exact solution for different tolerance $\delta$ and $N$ number of interior grid points in each dimension.}
+\end{table*}
+
+\section{Validation of Results}
+In the theory of thin plates, the biharmonic equation in (\ref{bih_equ}) describes the deflection of loads and has been discussed widely. Analytical solutions are computed for certain prescribed external loads. In this section, we will validate our numerical results by comparing them to the analytical solution. For a an external load that is described as a function $f(x,y)$ on a Cartisian rectangular plate $0\leq x\leq a$ ,
+$0\leq y\leq b$ of the form,
+\begin{equation}
+f(x,y) = \pi^4\left(\left(\frac{m}{a}\right)^2 + \left(\frac{n}{b}\right)^2\right)^2\sin(m\pi x)\sin(n\pi y),
+\end{equation}
+with the boundary condition prescribed in (\ref{bih_equ}) as simply supported plate, the exact solution is
+\begin{equation}
+u(x,y) = \sin(m\pi x)\sin(n\pi y)
+\end{equation}
+
+In the figure (\ref{1}-\ref{3}), the results of the numerical solution computed for the wave numbers $m = 1$ and $n = 1$ on a grid size $52\times52$ is compared to the exact solution. The Jacobi iterative method converges when the relative error of the numerical solution in the 2-norm reaches a value less than $10^{-6}$.
+\begin{figure}[h]
+\footnotesize
+\begin{minipage}[h]{.5\textwidth }
+\includegraphics[width=0.75\textwidth]{./figures/vrm1n1.png}
+\caption{shows the numerical approximation \\
+  on a grid $52\times52$.}
+\label{1}
+\end{minipage}
+\begin{minipage}[h]{.5\textwidth}
+\includegraphics[width=0.75\textwidth]{./figures/vrerrm1n1.png}
+\caption{shows the error between the exact \\
+and the numerical solutions.}
+\label{2}
+\end{minipage}
+\begin{minipage}[h]{.5\textwidth}
+\includegraphics[width=0.75\textwidth]{./figures/vrexactm1n1.png}
+\caption{shows the analytical solution \\
+on the same grid size.}
+\label{3}
+\end{minipage}
+\end{figure}
+
+We also computed the numerical solution for different wave numbers $m$ and $n$ and the results are shown in the figure below (\ref{4}-\ref{7}). We notice that for increasing value of wave numbers, Jacobi iterative method converges in less number of iteration.\\
+\begin{table*}[h]
+\centering
+\begin{tabular}{|p{0.05\linewidth}p{0.05\linewidth}p{0.15\linewidth}|p{0.05\linewidth}p{0.05\linewidth}p{0.15\linewidth}|}
+\hline
+$m$ & $n$  & Iterations & $m$ & $n$  & Iterations\\
+\hline
+1 & 1 & 5180 & 1 & 3 & 1221\\
+2 & 2 & 1494 & 5 & 1 & 510\\
+3 & 3 & 713  & 4 & 2 & 468\\
+4 & 4 & 420  & 5 & 3 & 397\\
+\hline
+\end{tabular}
+\caption{shows the number of iteration needed for different wave number with $N = 50$ and $\delta = 10^{-6}$.}
+\end{table*}
+\begin{figure}[htb]
+\footnotesize
+\begin{minipage}[h]{.5\textwidth }
+\includegraphics[width=0.75\textwidth]{./figures/bhm1n1.png}
+\caption{5180 iterations needed when \\$m =1$ and $n =1$.}
+\label{4}
+\end{minipage}
+\begin{minipage}[htb]{.5\textwidth}
+\includegraphics[width=0.75\textwidth]{./figures/bhm2n2.png}
+\caption{1494 iterations needed when\\ $m = 2$ and $n = 2$. }
+\end{minipage}
+\begin{minipage}[h]{.5\textwidth}
+\includegraphics[width=0.75\textwidth]{./figures/bhm3n1.png}
+\caption{713 iterations needed when\\ $m = 3$ and $n = 1$ .}
+\end{minipage}
+\begin{minipage}[h]{.5\textwidth}
+\includegraphics[width=0.75\textwidth]{./figures/bhm3n3.png}
+\caption{277 iterations needed when \\ $m = 3$ and $n = 3$ .}
+\label{7}
+\end{minipage}
+\end{figure}
+
+
+\section{Parallel Jacobi algorithm }
+In this section, we consider the Jacobi algorithm to solve the system of linear equations $\textbf{A}\textbf{\underline{U}} = \textbf{\underline{F}}$ obtained from the discretisation of the two Poisson problem in $\S 2$. We parallelize this algorithm using 1D decomposition of the domain based on \emph{oned.f} from \emph{Using MPI (Gropp et. al.)} and assigning sets of \textbf{\underline{U}} to processors. At every iteration, each processor computes the new values, sends the values needed to the neighboring processor and computes the relative error while waiting for the new values from the other processes. The algorithm is stopped when the convergence criteria is reached in all processors.
+
+\section{Analysis of the parallel algorithm}
+The operations performed in parallel algorithms are classified into three main categories, the computation that is performed sequentially, the parallel computations and the parallel overhead. In this section, we examine the performance and the efficiency of the parallel program implemented. The speedup $\psi(n,p)$ is defined to be the ratio between the sequential execution time and the parallel execution time with $n$ and $p$ denote the problem size and the number of processors respectively, the efficiency $\epsilon(n,p)$ of a parallel program is defined to be the speedup divided by the number of processors used, $\sigma(n)$ denotes the inherently serial portion, $\phi(n)$ denotes the portion that is parallelized and $\kappa(n,p)$ denotes the time required for parallel overhead. The time required using different number of processors as well as the speedup and the efficiency are shown in Table 3 for a fixed problem of size $N = 300$ interior points.\\
+\begin{table*}[h]
+\centering
+\footnotesize
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\cline{1-2}
+$N$ & No. of iterations\\
+\hline
+\multirow{4}{*}{300} &  \multirow{4}{*}{382000}
+& No. of processors & 1        &2        &4      &8      &16     &32     &64\\
+\cline{3-10}
+&& Time (s)         & 1959.29  & 1066.71 &525.62 &427.00 &380.40 &336.62 &334.66 \\
+\cline{3-10}
+&&parallel speed-up $\psi$      &&1.8368  &3.7276   &4.5885   &5.1505  &5.8203  &5.8544\\
+\cline{3-10}                   
+&&parallel efficiency $\epsilon$&&0.9184  &0.9319   &0.5736   &0.3219  &0.1819  &0.0915\\
+\hline
+\end{tabular}
+\caption{shows the execution time, the parallel speed-up and the parallel efficiency of the algorithm using different number of processors for a fixed number of interior points and tolerance.}
+\end{table*}
+~\\
+Adopting the definition of speedup as per [1],
+\begin{equation*}
+\psi(n,p) \leq \frac{\sigma(n) + \phi(n)}{\sigma(n) + \phi(n)/p + \kappa(n,p)},
+\end{equation*}
+the efficiency of the a parallel problem of size $n$ and $p$ from it definition takes the form
+\begin{equation*}
+\epsilon(n,p) \leq \frac{\sigma(n)+\phi(n)}{p\sigma(n) + \phi(n) + p\kappa(n,p)},
+\end{equation*}
+and since all term are greater than or equal to zero, $0\leq\epsilon(n,p)\leq1$ as shown in Figure (\ref{eff}). Since the problem size was fixed at a constant with increasing number of processors, Amdahl's law is a good assumption and predict the maximum achievable speed.
+We computed the inherently sequential portion of the computation $f = \sigma(n)/(\sigma(n) + \phi(n))$  using Amdahl's law. Since the maximum speedup for the fixed size problem is reached about 6, then the inherited sequential portion of computation is,
+\begin{equation*}
+f =  \lim_{p \to \infty} \frac{p-\psi}{\psi(p-1)} =\frac{1}{\psi} = 0.167.
+\end{equation*}
+
+\begin{figure}[t]
+\footnotesize
+\begin{minipage}[htb]{.5\textwidth}
+\includegraphics[width=.9\textwidth]{./figures/excution_time.png}
+\caption{Execution time for different number \\of processors with fixed problem size. }
+\label{time}
+\end{minipage}
+\begin{minipage}[h]{.5\textwidth}
+\includegraphics[width=.9\textwidth]{./figures/parrallel_speedup.png}
+\caption{The speedup for different number \\of processors with fixed problem size.}
+\label{speed}
+\end{minipage}
+\begin{minipage}[h]{.5\textwidth}
+\includegraphics[width=.9\textwidth]{./figures/parrallel_efficiency.png}
+\caption{The efficiency for different number \\ of processors with fixed problem size.}
+\label{eff}
+\end{minipage}
+\end{figure}
+
+\begin{thebibliography}{9}
+\bibitem{Quinn}
+Micheal J. Quinn,(2004)
+Parallel Programming in C with MPI and OpenMP
+\textit{Mc Graw Hill}
+pp. 159-215
+
+\bibitem{Glowinski }
+R. Glowinski, O. Pironneau,
+Numerical methods for the first biharmonic equation and for the two dimensional Stokes problem,
+\textit{SIAM Rev},
+\textbf{21}, pp 167-212
+
+\bibitem{Arad}
+M, Arad, A. Yakhot, G. Ben-Dor,(1996)
+High-Order accurate discretization stencil for an elliptical equation 
+\textit{Int. J. Num. Methods in Fluids}   
+\textbf{23}, pp 367-377
+\end{thebibliography}
+
+
+
+\end{document}

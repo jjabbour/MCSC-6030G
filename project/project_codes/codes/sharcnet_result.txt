@@ -1,0 +1,64 @@
+----------------------------------------------------------------------------------------------------
+The numerical solution is computed using 4 processes, where we use 1D block decomposition of the 1D grid.(exchanged1d)
+The domain is discretised using 302 grid points. 
+The linear system of equation obtained from the discretisation is solved using Jacobi iteration. If the relative error is less than a prescribed tolerance of 1e-06 Jacobi iteration converges. 
+Results: 
+-------- 
+Jacobi iteration converges after 382800 iterations.
+The time of computation required is 525.622176886 using 4 processes.
+----------------------------------------------------------------------------------------------------
+The numerical solution is computed using 32 processes, where we use 1D block decomposition of the 1D grid.(exchanged1d)
+The domain is discretised using 302 grid points. 
+The linear system of equation obtained from the discretisation is solved using Jacobi iteration. If the relative error is less than a prescribed tolerance of 1e-06 Jacobi iteration converges. 
+Results: 
+-------- 
+Jacobi iteration converges after 382800 iterations.
+The time of computation required is 336.628913879 using 32 processes.
+----------------------------------------------------------------------------------------------------
+The numerical solution is computed using 64 processes, where we use 1D block decomposition of the 1D grid.(exchanged1d)
+The domain is discretised using 302 grid points. 
+The linear system of equation obtained from the discretisation is solved using Jacobi iteration. If the relative error is less than a prescribed tolerance of 1e-06 Jacobi iteration converges. 
+Results: 
+-------- 
+Jacobi iteration converges after 382800 iterations.
+The time of computation required is 334.668715954 using 64 processes.
+----------------------------------------------------------------------------------------------------
+The numerical solution is computed using 2 processes, where we use 1D block decomposition of the 1D grid.(exchanged1d)
+The domain is discretised using 302 grid points. 
+The linear system of equation obtained from the discretisation is solved using Jacobi iteration. If the relative error is less than a prescribed tolerance of 1e-06 Jacobi iteration converges. 
+Results: 
+-------- 
+Jacobi iteration converges after 382800 iterations.
+The time of computation required is 1066.71488905 using 2 processes.
+----------------------------------------------------------------------------------------------------
+The numerical solution is computed using 16 processes, where we use 1D block decomposition of the 1D grid.(exchanged1d)
+The domain is discretised using 302 grid points. 
+The linear system of equation obtained from the discretisation is solved using Jacobi iteration. If the relative error is less than a prescribed tolerance of 1e-06 Jacobi iteration converges. 
+Results: 
+-------- 
+Jacobi iteration converges after 382800 iterations.
+The time of computation required is 380.408118963 using 16 processes.
+----------------------------------------------------------------------------------------------------
+The numerical solution is computed using 8 processes, where we use 1D block decomposition of the 1D grid.(exchanged1d)
+The domain is discretised using 302 grid points. 
+The linear system of equation obtained from the discretisation is solved using Jacobi iteration. If the relative error is less than a prescribed tolerance of 1e-06 Jacobi iteration converges. 
+Results: 
+-------- 
+Jacobi iteration converges after 382800 iterations.
+The time of computation required is 427.003667116 using 8 processes.
+----------------------------------------------------------------------------------------------------
+The numerical solution is computed using 1 processes, where we use 1D block decomposition of the 1D grid.(exchanged1d)
+The domain is discretised using 302 grid points. 
+The linear system of equation obtained from the discretisation is solved using Jacobi iteration. If the relative error is less than a prescribed tolerance of 1e-06 Jacobi iteration converges. 
+Results: 
+-------- 
+Jacobi iteration converges after 382800 iterations.
+The time of computation required is 2832.11339402 using 1 processes.
+----------------------------------------------------------------------------------------------------
+The numerical solution is computed using 1 processes, where we use 1D block decomposition of the 1D grid.(exchanged1d)
+The domain is discretised using 302 grid points. 
+The linear system of equation obtained from the discretisation is solved using Jacobi iteration. If the relative error is less than a prescribed tolerance of 1e-06 Jacobi iteration converges. 
+Results: 
+-------- 
+Jacobi iteration converges after 382800 iterations.
+The time of computation required is 1959.2953651 using 1 processes.

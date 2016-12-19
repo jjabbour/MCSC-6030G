@@ -1,0 +1,68 @@
+\documentclass[titlepage,12pt,fleqn]{article}%
+
+\usepackage[english]{babel}
+\usepackage{setspace}
+\usepackage{graphicx}
+\usepackage{epsfig}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{graphics}
+\usepackage{units}
+\usepackage{commath}
+\usepackage{multirow}
+\usepackage{booktabs}
+\usepackage{caption3} % load caption package kernel first
+\DeclareCaptionOption{parskip}[]{} % disable "parskip" caption option
+\usepackage[small]{caption}
+
+\everymath{\displaystyle}
+%\pagestyle{headings}
+\setlength{\oddsidemargin}{0in}
+\setlength{\evensidemargin}{-0.25in}
+\setlength{\topmargin}{-0.25in}
+\setlength{\textheight}{8.85in}
+\setlength{\textwidth}{6.75in}
+\setlength{\footskip}{0.75in}
+%\newfont{\footfont}{cmmi10 at 40pt}
+%\makeatletter
+%\def\writewhite{\special{ps: gsave 1 setgray}}
+%\def\writeblack{\special{ps: 0 setgray grestore}}
+%\def\writegray{\special{ps: gsave 0.7 setgray}}
+%\renewcommand{\@oddfoot}{\hfill\mbox{\vbox to 1cm{\writegray
+%                         \hrule height 1cm width 1cm}
+%                         \hspace*{-1cm}\writewhite\raisebox{5pt}{\footfont{\symbol{25}}}}
+%                         \hfill\writeblack}
+%\renewcommand{\@evenfoot}{\hfill\mbox{\vbox to 1cm{\writegray
+%                         \hrule height 1cm width 1cm}
+%                         \hspace*{-1cm}\writewhite\raisebox{5pt}{\footfont{\symbol{25}}}}
+%                         \hfill\writeblack}
+%\makeatother
+
+
+%differentiation
+\makeatletter
+\providecommand*{\diff}%
+    {\@ifnextchar^{\DIfF}{\DIfF^{}}}
+\def\DIfF^#1{%
+    \mathop{\mathrm{\mathstrut d}}%
+        \nolimits^{#1}\gobblespace}
+\def\gobblespace{%
+    \futurelet\diffarg\opspace}
+\def\opspace{%
+    \let\DiffSpace\!%
+    \ifx\diffarg(%
+        \let\DiffSpace\relax
+    \else
+        \ifx\diffarg[%
+            \let\DiffSpace\relax
+    \else
+        \ifx\diffarg\{%
+            \let\DiffSpace\relax
+        \fi\fi\fi\DiffSpace}
+
+\providecommand*{\deriv}[3][]{%
+    \frac{\diff^{#1}#2}{\diff #3^{#1}}}
+
+\providecommand*{\pderiv}[3][]{%
+\frac{\partial^{#1}#2}%
+{\partial #3^{#1}}}

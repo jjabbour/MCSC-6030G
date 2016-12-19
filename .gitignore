@@ -1,0 +1,5 @@
+*.pyc
+*.py~
+*.py\#
+.ipynb_checkpoints/
+project/project_codes/.ipynb_checkpoints/
